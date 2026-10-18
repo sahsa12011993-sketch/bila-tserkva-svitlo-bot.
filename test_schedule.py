@@ -1,32 +1,27 @@
+
 import re
 import urllib.request
-from html import unescape
 
 url = "https://bezsvitla.com.ua/kyivska-oblast/bila-tserkva"
 
 request = urllib.request.Request(
-    url, headers={"User-Agent": "Mozilla/5.0"}
+    url,
+    headers={"User-Agent": "Mozilla/5.0"}
 )
 
 with urllib.request.urlopen(request, timeout=20) as response:
     html = response.read().decode("utf-8", errors="replace")
 
-text = unescape(re.sub(r"<[^>]+>", " ", html))
-text = re.sub(r"\s+", " ", text)
+for phrase in ["Черга 1.1", "Черга 1.2", "Черга 2.1"]:
+    position = html.find(phrase)
 
-for group in ["1.1", "1.2", "2.1"]:
-    print(f"\n--- Підчерга {group} ---")
-    match = re.search(re.escape(group), text)
-    if match:
-        start = max(0, match.start() - 150)
-        end = min(len(text), match.end() + 400)
-        print(text[start:end])
-    else:
+    print(f"\n{'=' * 20} {phrase} {'=' * 20}")
+
+    if position == -1:
         print("Не знайдено")
+    else:
+        start = max(0, position - 1000)
+        end = min(len(html), position + 2500)
+        print(html[start:end])
 
-print("\n--- Часові інтервали ---")
-times = re.findall(
-    r"\b\d{1,2}[:.]\d{2}\s*[-–—]\s*\d{1,2}[:.]\d{2}\b",
-    text
-)
-print(times[:30] if times else "Інтервали не знайдено")
+print("\nПеревірка завершена.")
