@@ -1,0 +1,24 @@
+
+name: Test DTEK client
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install DTEK client
+        run: pip install dtek-blackout-client==0.1.12
+
+      - name: Run test
+        run: python test_dtek.py
+        
